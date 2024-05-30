@@ -79,8 +79,6 @@ func DSN() (v string) {
 
 	query.Add("application_name", application)
 
-	query.Add("keepalives", "1")
-
 	query.Add("pool_max_conns", maxconnections)
 	query.Add("pool_min_conns", minconnections)
 
