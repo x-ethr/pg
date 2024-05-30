@@ -48,7 +48,6 @@ func DSN() (v string) {
 	application := os.Getenv("PGAPPNAME")
 
 	sslmode := os.Getenv("PGSSLMODE")
-	certmode := os.Getenv("PGSSLCERTMODE")
 	root := os.Getenv("PGSSLROOTCERT")
 
 	maxconnections := os.Getenv("PGPOOLMAXCONNECTIONS")
@@ -83,7 +82,6 @@ func DSN() (v string) {
 	query.Add("pool_min_conns", minconnections)
 
 	query.Add("sslmode", sslmode)
-	query.Add("sslcertmode", certmode)
 	query.Add("sslrootcert", root)
 
 	for key, values := range query {
