@@ -134,7 +134,7 @@ func Disconnect(ctx context.Context, connection *pgxpool.Conn, tx pgx.Tx) {
 		} else if e != nil && (errors.Is(e, pgx.ErrTxClosed)) {
 			slog.InfoContext(ctx, "Successfully Committed Database Transaction")
 		} else if e == nil {
-			slog.ErrorContext(ctx, "Successfully Rolled Back Database Transaction")
+			slog.InfoContext(ctx, "Successfully Rolled Back Database Transaction")
 		}
 	}
 
