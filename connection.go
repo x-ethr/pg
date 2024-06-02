@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/url"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -119,4 +121,17 @@ func Connection(ctx context.Context, uri string) (*pgxpool.Conn, error) {
 	}
 
 	return Pool.Load().Acquire(ctx)
+}
+
+func Disconnect(ctx context.Context, connection *pgxpool.Conn, tx pgx.Tx) {
+	e := tx.Rollback(ctx)
+	if e != nil && !(errors.Is(e, pgx.ErrTxClosed)) {
+		slog.ErrorContext(ctx, "Error Rolling Back Transaction", slog.String("error", e.Error()))
+	} else if e != nil && (errors.Is(e, pgx.ErrTxClosed)) {
+		slog.InfoContext(ctx, "Successfully Committed Database Transaction")
+	} else if e == nil {
+		slog.ErrorContext(ctx, "Successfully Rolled Back Database Transaction")
+	}
+
+	connection.Release()
 }
